@@ -16,16 +16,16 @@ for line in lines:
     current_path = 'a/IMG/' + filename
     image = cv2.imread(current_path)
     images.append(image)
-    #images.append(cv2.flip(image, 1))
+    images.append(cv2.flip(image, 1))
     measurement = float(line[3])
     measurements.append(measurement)
-    #measurements.append(measurement * -1.0)
+    measurements.append(measurement * -1.0)
 
 X_train = np.array(images)
 y_train = np.array(measurements)
 
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Activation, Cropping2D
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Activation, Cropping2D, Reshape
 
 # TODO add cropping
 # TODO side cameras
@@ -33,8 +33,7 @@ from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Ac
 
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160,320,3)))
-model.add(Cropping2D(cropping=((50,20), (0,0))))
-
+model.add(Cropping2D(cropping=((75,20), (0,0))))
 
 model.add(Convolution2D(24,5,5,border_mode='valid', activation='relu', subsample=(2,2)))
 model.add(Convolution2D(36,5,5,border_mode='valid', activation='relu', subsample=(2,2)))
