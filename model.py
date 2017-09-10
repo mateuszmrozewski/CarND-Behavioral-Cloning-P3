@@ -20,15 +20,22 @@ with open(data_folder + 'driving_log.csv') as csvfile:
 images = []
 measurements = []
 for line in lines:
-    images.append(get_image(line[0]))
-    images.append(get_image(line[1]))
-    images.append(get_image(line[2]))
-    #images.append(cv2.flip(image, 1))
+    center = get_image(line[0])
+    images.append(center)
+    images.append(cv2.flip(center, 1))
+    left = get_image(line[1])
+    images.append(left)
+    images.append(cv2.flip(left, 1))
+    right = get_image(line[2])
+    images.append(right)
+    images.append(cv2.flip(right, 1))
     measurement = float(line[3])
     measurements.append(measurement)
+    measurements.append(measurement * -1.0)
     measurements.append(measurement + correction)
-    measurements.append(measurement + correction)
-    #measurements.append(measurement * -1.0)
+    measurements.append((measurement + correction) * -1.0)
+    measurements.append(measurement - correction)
+    measurements.append((measurement - correction) * -1.0)
 
 X_train = np.array(images)
 y_train = np.array(measurements)
