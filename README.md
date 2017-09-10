@@ -125,4 +125,5 @@ A well written README file can enhance your project and portfolio.  Develop your
 * run3 - lenet, own data cropped
 * run4 - lenet, provided data
 * run5 - nvidia, provided data
-* run6 - nvidia, provided data, 25 pixels more cropping, extended with flipped image
+* run6 - nvidia, provided data, 25 pixels more cropping, extended with flipped image, COMPLETED LAP!
+* run7 - nvidia, provided data, no flipped images but all 3 angles used
