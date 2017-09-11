@@ -4,3 +4,4 @@ model.h5
 models
 run*/*.jpg
 data
+own-data*

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 data_folder = 'a/'
-correction = 0.2
+correction = 0.1
 
 def get_image(original_path):
     filename = original_path.split('/')[-1]
@@ -41,11 +41,10 @@ X_train = np.array(images)
 y_train = np.array(measurements)
 
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Activation, Cropping2D, Reshape
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Activation, Cropping2D, Reshape, Dropout
 
-# TODO add cropping
-# TODO side cameras
-# TODO nvidia architecture
+# TODO generator
+# TODO try with dropout
 
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160,320,3)))
@@ -58,7 +57,9 @@ model.add(Convolution2D(64,3,3,border_mode='valid', activation='relu', subsample
 model.add(Convolution2D(64,3,3,border_mode='valid', activation='relu', subsample=(1,1)))
 model.add(Flatten())
 model.add(Dense(1164, activation='relu'))
+model.add(Dropout(0.5))
 model.add(Dense(100, activation='relu'))
+model.add(Dropout(0.25))
 model.add(Dense(50, activation='relu'))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(1, activation='tanh'))
