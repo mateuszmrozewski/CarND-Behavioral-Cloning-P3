@@ -136,3 +136,4 @@ A well written README file can enhance your project and portfolio.  Develop your
 * run14 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, dropout on convolutional layers
 * run15 - as run11, speed 20
 * run16 - as run11, speed 30
+* run17 - track 2, architecture from run11
