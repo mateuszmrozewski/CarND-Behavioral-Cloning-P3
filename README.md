@@ -130,7 +130,7 @@ A well written README file can enhance your project and portfolio.  Develop your
 * run8 - nvidia, provided data, flipped images, all 3 cameras used, correction 0.2
 * run9 - nvidia, own data mouse controller, flipped images, 1 camera
 * run10 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.2
-* run11 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1
+* run11 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, COMPLETED LAP!
 * run12 - nvidia, provided data, 3 cameras + flipping, correction 0.1, dropout
 * run13 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, dropout on dense layers
 * run14 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, dropout on convolutional layers
