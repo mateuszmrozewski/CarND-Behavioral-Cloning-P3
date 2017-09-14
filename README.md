@@ -1,139 +1,170 @@
-# Behaviorial Cloning Project
+# Behavioral Cloning Project
 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
-
-Overview
----
-This repository contains starting files for the Behavioral Cloning Project.
-
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. You will train, validate and test a model using Keras. The model will output a steering angle to an autonomous vehicle.
-
-We have provided a simulator where you can steer a car around a track for data collection. You'll use image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
-
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting five files: 
-* model.py (script used to create and train the model)
-* drive.py (script to drive the car - feel free to modify this file)
-* model.h5 (a trained Keras model)
-* a report writeup file (either markdown or pdf)
-* video.mp4 (a video recording of your vehicle driving autonomously around the track for at least one full lap)
-
-This README file describes how to output the video in the "Details About Files In This Directory" section.
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/432/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
 The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior 
-* Design, train and validate a model that predicts a steering angle from image data
-* Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
+
+* Use the simulator to collect data of good driving behavior
+* Build, a convolution neural network in Keras that predicts steering angles from images
+* Train and validate the model with a training and validation set
+* Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-### Dependencies
-This lab requires:
+## Rubric Points
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+### Required files
 
-The lab enviroment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+My project includes the following files:
+* model.py containing the script to create and train the model
+* drive.py for driving the car in autonomous mode
+* model.h5 containing a trained convolution neural network 
+* README.md summarizing the results
 
-The following resources can be found in this github repository:
-* drive.py
-* video.py
-* writeup_template.md
+### Quality of code
 
-The simulator can be downloaded from the classroom. In the classroom, we have also provided sample data that you can optionally use to help train your model.
-
-## Details About Files In This Directory
-
-### `drive.py`
-
-Usage of `drive.py` requires you have saved the trained model as an h5 file, i.e. `model.h5`. See the [Keras documentation](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) for how to create this file using the following command:
-```sh
-model.save(filepath)
-```
-
-Once the model has been saved, it can be used with drive.py using this command:
-
+#### Submission includes functional code
+Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-The above command will load the trained model and use the model to make predictions on individual images in real-time and send the predicted angle back to the server via a websocket connection.
+#### Submission code is usable and readable
 
-Note: There is known local system's setting issue with replacing "," with "." when using drive.py. When this happens it can make predicted steering values clipped to max/min values. If this occurs, a known fix for this is to add "export LANG=en_US.utf8" to the bashrc file.
+The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
-#### Saving a video of the autonomous agent
+###Model Architecture and Training Strategy
 
-```sh
-python drive.py model.h5 run1
+#### An appropriate model architecture has been employed
+
+I have used the NVIDIA architecture as my neural network model. It has the following layers:
+
+* Lambda layer to normalize the input values between -0.5 and 0.5
+* Cropping layer to get rid of the bottom and top part of the image to focus more on the road
+* 5 Convolutional layer with valid padding and relu activations
+* Flattening layer
+* 5 dense layers, 4 using relu activationa and last one using tanh activation
+
+Here is the model summary from Keras
+
+```
+____________________________________________________________________________________________________
+Layer (type)                     Output Shape          Param #     Connected to
+====================================================================================================
+lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_1[0][0]
+____________________________________________________________________________________________________
+cropping2d_1 (Cropping2D)        (None, 65, 320, 3)    0           lambda_1[0][0]
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 31, 158, 24)   1824        cropping2d_1[0][0]
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 14, 77, 36)    21636       convolution2d_1[0][0]
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 5, 37, 48)     43248       convolution2d_2[0][0]
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 3, 35, 64)     27712       convolution2d_3[0][0]
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 1, 33, 64)     36928       convolution2d_4[0][0]
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 2112)          0           convolution2d_5[0][0]
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 1164)          2459532     flatten_1[0][0]
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 100)           116500      dense_1[0][0]
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 50)            5050        dense_2[0][0]
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 10)            510         dense_3[0][0]
+____________________________________________________________________________________________________
+dense_5 (Dense)                  (None, 1)             11          dense_4[0][0]
+====================================================================================================
+Total params: 2,712,951
+Trainable params: 2,712,951
+Non-trainable params: 0
 ```
 
-The fourth argument, `run1`, is the directory in which to save the images seen by the agent. If the directory already exists, it'll be overwritten.
 
-```sh
-ls run1
+#### Attempts to reduce overfitting in the model
 
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_424.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_451.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_477.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_528.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_573.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_618.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_697.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_723.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_749.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_817.jpg
-...
-```
+I have made a few attemps to use dropout in my model. However the results turn out to be worse than without the dropout.
+My understanding is that dropout could help to generalize if I had more training data. In the end I was able to train the
+model to drive on track 1 or track 2 without using dropout.
 
-The image file name is a timestamp of when the image was seen. This information is used by `video.py` to create a chronological video of the agent driving.
+#### Model parameter tuning
 
-### `video.py`
+The model used an adam optimizer, so the learning rate was not tuned manually. The only thing I tuned after switching to nvidia architecture was to increase image cropping from top. Rest was playing with the input data.
 
-```sh
-python video.py run1
-```
+#### Appropriate training data
 
-Creates a video based on images found in the `run1` directory. The name of the video will be the name of the directory followed by `'.mp4'`, so, in this case the video will be `run1.mp4`.
+To gather the training data I followed the suggestions in lectures: two laps of smooth driving, one lap going from side to side and one lap focused on doing the curves as smooth as possible. I have used mouse to drive the car. More details are in the following section.
 
-Optionally, one can specify the FPS (frames per second) of the video:
+###Model Architecture and Training Strategy
 
-```sh
-python video.py run1 --fps 48
-```
+#### Solution Design Approach
 
-Will run the video at 48 FPS. The default FPS is 60.
+**NOTE:** Videos and model.py from all runs are included in folders run3 to run19. Model files are added to github only for the successful runs.
 
-#### Why create a video
+##### Run 1 and 2
+I have started with a little bit of data generated by myself driving the car using keyboard. First two runs where purely to figure out if both training and driving work fine for me. It was a simple two layer feed forward network. Not a big surprise the car went offroad pretty quickly. However I got the confirmation that the workflow works fine and there are not technical difficulties.
 
-1. It's been noted the simulator might perform differently based on the hardware. So if your model drives succesfully on your machine it might not on another machine (your reviewer). Saving a video is a solid backup in case this happens.
-2. You could slightly alter the code in `drive.py` and/or `video.py` to create a video of what your model sees after the image is processed (may be helpful for debugging).
+##### Run 3 and 4
+As we process images I decided to give LeNet a try. The result was better as car at least stayed on the road for a moment. First run was on my limited data and second on udacity provided data. With udacity data the car was able to drive a little bit further. At that moment I was already cropping the image 20 pixels from the bottom and 50 from the top.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+[Video run 3](run3/run3.mp4)
+[Video run 4](run4/run4.mp4)
 
-#### RUNS
+##### Run 5
+For the run 5 I switched into NVIDIA architecture still using the udacity provided data. The car almost made it through the corner after the bridge. It raised my hopes and was matching the tips on slack channel: use nvidia, it works.
 
-* run3 - lenet, own data cropped
-* run4 - lenet, provided data
-* run5 - nvidia, provided data, cropping
-* run6 - nvidia, provided data, 25 pixels more cropping, extended with flipped image, COMPLETED LAP!
-* run7 - nvidia, provided data, no flipped images but all 3 cameres used, wrong correction for right image!
-* run8 - nvidia, provided data, flipped images, all 3 cameras used, correction 0.2
-* run9 - nvidia, own data mouse controller, flipped images, 1 camera
-* run10 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.2
-* run11 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, COMPLETED LAP!
-* run12 - nvidia, provided data, 3 cameras + flipping, correction 0.1, dropout
-* run13 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, dropout on dense layers
-* run14 - nvidia, own data mouse controller, 3 cameras + flipping, correction 0.1, dropout on convolutional layers
-* run15 - as run11, speed 20
-* run16 - as run11, speed 30
-* run17 - track 2, architecture from run11
+[Video run 5](run5/run5.mp4)
+
+##### Run 6
+As a try to improve the situation I decided to crop the image 75 pixel from the top instead of just 50 and also extend my set with flipped images. To my surprise car completed the lap for the first time. However the driving was not the best, going on to the lines a few times. Also the results were not consistent, car sometimes fell out of the road.
+
+[Video run 6](run6/run6.mp4)
+
+##### Run 7 and 8
+In a hope for better corners I decided to extend the training data with side cameras. Run 7 included all three cameras without flipping and run 8 was extended with flipped versions of all three cameras. The correction paramter used for the side cameras was 0.2. For run 7 I have used the correction parameter incorrectly for right camera so the car keeps on the side of the road. Run 8 result was not satisfactory as well, the car went offroad again.
+
+[Video run 7](run7/run7.mp4)
+[Video run 8](run8/run8.mp4)
+
+##### Run 9 and 10
+Previous runs made me think that the provided data may not be good and may not have enough variation in recovering from the corners. I decided to record my own data again, this time using mouse as a controller. I kept the nvidia architecture and reduced the input data just to center camera with flipping. Not a great result. At this moment I was not sure about data quality. I decided to try again without any architecture changes but with all 3 cameras. It gave a better result.
+
+[Video run 9](run9/run9.mp4)
+[Video run 10](run10/run10.mp4)
+
+##### Run 11 - COMPLETED LAP
+I remembered that the correction parameter for the side cameras should be tuned as well. I decided to try with smaller correction and see how it affects the driving. It turned out to be the key to fix the current model. I have achived a model that can drive the car around the whole track. The longest try was about 25 minutes (and then I stopped it, it didn't crash).
+
+[Video run 11](run11/run11.mp4)
+
+##### Run 12 to 14
+During these runs I tried to use dropout at various places of the model: after the convolutional layer and after the dense layers. However the results were degrading. As the original nvidia architecture did not use dropouts I decided that three tries is enough especially that I already had a model running a full lap.
+
+[Video run 12](run12/run12.mp4)
+[Video run 13](run13/run13.mp4)
+[Video run 14](run14/run14.mp4)
+
+##### Run 15 and 16
+Run 15 and 16 were the same runs as run 11 but I have changed the speed in drive.py. With speed set to 20 car could drive a lap. With speed set to 30 car completed the lap but the driving was a little bit crazy. My intuition is that with higher speeds the difference between subsequent frames fed into the network are bigger and less smooth and that causes the predicted steering angle to be too drastic to drive smoothly. I assume that with more training data we could make it a little bit better.
+
+[Video run 15](run15/run15.mp4)
+[Video run 16](run16/run16.mp4)
+
+##### Run 17 to 19, track 2
+I decided to try architecture from run 11 on track 2. I have gathered training data from track 2 using mouse as a controller, two laps. The results were not bad but the car crashed. I gather the data again, three laps: two smooth and one from side to side. The effects were better but still car crashed from time to time. Then I combined both data recording and trained the model again. This time it could complete the lap on track 2.
+
+[Video run 17](run17/run17.mp4)
+[Video run 18](run18/run18.mp4)
+[Video run 19](run19/run19.mp4)
+
+
+#### Final Model Architecture
+
+The final model architecture stayed as per nvidia whitepaper and is described above.
+
+#### Creation of the Training Set & Training Process
+
+Creation of training set and training process is described above
+
+## Final thoughts
+
+After doing several runs it is pretty clear that more than a good architecture it is important to have a quality data. With projects like this I realize that "quality" is very hard to define. My initial data was gathered by driving the simulator using keyboard without leaving the track. However that was not enough to allow the model to generalize well and especially to learn how to recover. It turned out that I spent more time on playing with the data then with the network architecture itself.

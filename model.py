@@ -6,17 +6,20 @@ data_folder = 'a/'
 correction = 0.1
 
 def get_image(original_path):
+    '''Load the image from specified path'''
     filename = original_path.split('/')[-1]
     current_path = data_folder + 'IMG/' + filename
     image = cv2.imread(current_path)
     return image
 
+# Load the CSV file with recorded data
 lines = []
 with open(data_folder + 'driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
 
+# Load images for all 3 cameras and add flipped images as well
 images = []
 measurements = []
 for line in lines:
@@ -43,14 +46,14 @@ y_train = np.array(measurements)
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Activation, Cropping2D, Reshape
 
-# TODO add cropping
-# TODO side cameras
-# TODO nvidia architecture
-
+# Build network model
 model = Sequential()
+# Normalize input
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160,320,3)))
+# Crop the input, we don't need the whole image
 model.add(Cropping2D(cropping=((75,20), (0,0))))
 
+# Follow the NVIDIA architecture
 model.add(Convolution2D(24,5,5,border_mode='valid', activation='relu', subsample=(2,2)))
 model.add(Convolution2D(36,5,5,border_mode='valid', activation='relu', subsample=(2,2)))
 model.add(Convolution2D(48,5,5,border_mode='valid', activation='relu', subsample=(2,2)))
@@ -63,7 +66,9 @@ model.add(Dense(50, activation='relu'))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(1, activation='tanh'))
 
+# Train the model
 model.compile(loss='mse', optimizer='adam')
+model.summary()
 model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=5)
 
 model.save('model.h5')
