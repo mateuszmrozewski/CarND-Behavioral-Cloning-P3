@@ -164,6 +164,11 @@ I decided to try architecture from run 11 on track 2. I have gathered training d
 
 [Video run 19](run19/run19.mp4)
 
+##### Run 20, track 1, COMPLETED LAP
+During the first review my reviewer pointed out that I am training the model on BGR model and drive.py uses RGB. In order the get smoother driving results I modified the drive.py to change the color model of input picture to match the required by my network. It made the driving even smoother. Still it is pretty awesome that network was able to generalize and dive the car before that :-)
+
+[Video run 20](run20/run20.mp4)
+
 
 #### Final Model Architecture
 
@@ -171,7 +176,33 @@ The final model architecture stayed as per nvidia whitepaper and is described ab
 
 #### Creation of the Training Set & Training Process
 
-Creation of training set and training process is described above
+The general creation of training set and training process is described above.
+
+Here are a few examples of pictures fed into the network as input. Please note that in this particular situation car was driving towards the left side of the road.
+
+Center camera:
+
+![center](examples/center_2017_09_10_15_13_13_009.jpg)
+
+Center camera flipped:
+
+![center](examples/center_2017_09_10_15_13_13_009_flipped.jpg)
+
+Left camera:
+
+![left](examples/left_2017_09_10_15_13_13_009.jpg)
+
+Left camera flipped:
+
+![left](examples/left_2017_09_10_15_13_13_009_flipped.jpg)
+
+Right camera:
+
+![right](examples/right_2017_09_10_15_13_13_009.jpg)
+
+Right camera flipped:
+
+![right](examples/right_2017_09_10_15_13_13_009_flipped.jpg)
 
 ## Final thoughts
 
